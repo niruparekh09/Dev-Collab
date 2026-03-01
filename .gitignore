@@ -1,0 +1,48 @@
+# ========================================
+# FRONTEND (Vite + React)
+# ========================================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/coverage/
+frontend/*.log
+
+# ========================================
+# SPRING BOOT (Maven)
+# ========================================
+**/target/
+**/*.log
+
+# Maven wrapper (optional – keep if you use it)
+# Uncomment if you DON'T want to commit wrapper files
+# .mvn/
+# mvnw
+# mvnw.cmd
+
+# ========================================
+# IDEs
+# ========================================
+
+# IntelliJ / WebStorm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# ========================================
+# OS files
+# ========================================
+.DS_Store
+Thumbs.db
+
+# ========================================
+# Misc
+# ========================================
+*.swp
+*.swo
+*.class

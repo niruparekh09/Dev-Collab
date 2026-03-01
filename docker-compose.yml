@@ -1,0 +1,59 @@
+services:
+
+  # ─────────────────────────────────────────
+  # MySQL — runs both databases in one instance
+  # ─────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: devcollab-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    volumes:
+      # Named volume — data persists when container stops
+      - mysql-data:/var/lib/mysql
+      # Init script — runs once on first startup
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - devcollab-network
+
+  # ─────────────────────────────────────────
+  # Keycloak — Identity Provider
+  # ─────────────────────────────────────────
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.6
+    container_name: devcollab-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./keycloak/devcollab-realm.json:/opt/keycloak/data/import/devcollab-realm.json
+    command: start-dev --import-realm
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - devcollab-network
+
+# ─────────────────────────────────────────
+# Named volumes
+# ─────────────────────────────────────────
+volumes:
+  mysql-data:
+
+# ─────────────────────────────────────────
+# Network
+# ─────────────────────────────────────────
+networks:
+  devcollab-network:
+    driver: bridge
